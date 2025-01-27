@@ -54,8 +54,8 @@ const Navbar = () => {
                             <NavLink to='/' className={linkClass}>HOME</NavLink>
                             <NavLink to='/products' className={linkClass}>PRODUCTS</NavLink>
                             <NavLink to='/recipe' className={linkClass}>RECIPE</NavLink>
-                            <NavLink to='/about-us' className={linkClass}>ABOUT US</NavLink>
-                            <NavLink to='/contact' className={linkClass}>CONTACT US</NavLink>
+                            <NavLink to='/about' className={linkClass}>ABOUT</NavLink>
+                            <NavLink to='/contact' className={linkClass}>CONTACT </NavLink>
                             <NavLink to='/check-order' className={linkClass}> Orders </NavLink>
                             <NavLink to='/login' className={linkClass} onClick={handleLogout}>LOG OUT</NavLink>
                         </>
@@ -64,8 +64,8 @@ const Navbar = () => {
                             <NavLink to='/' className={linkClass}>HOME</NavLink>
                             <NavLink to='/products' className={linkClass}>PRODUCTS</NavLink>
                             <NavLink to='/recipe' className={linkClass}>RECIPE</NavLink>
-                            <NavLink to='/about-us' className={linkClass}>ABOUT US</NavLink>
-                            <NavLink to='/contact' className={linkClass}>CONTACT US</NavLink>
+                            <NavLink to='/about' className={linkClass}>ABOUT</NavLink>
+                            <NavLink to='/contact' className={linkClass}>CONTACT</NavLink>
                             <NavLink to='/sign-up' className={linkClass}> SIGN UP </NavLink>
                         </>
                     )}
@@ -110,17 +110,17 @@ const Navbar = () => {
                     <div className='flex flex-col space-y-4 mt-4'>
                         {token ? (
                             <>
-                                <NavLink to='/' className={linkClass} onClick={toggleMobileMenu}>HOME</NavLink>
-                                <NavLink to='/products' className={linkClass} onClick={toggleMobileMenu}>PRODUCTS</NavLink>
-                                <NavLink to='/recipe' className={linkClass} onClick={toggleMobileMenu}>RECIPE</NavLink>
-                                <NavLink to='/about-us' className={linkClass} onClick={toggleMobileMenu}>ABOUT US</NavLink>
-                                <NavLink to='/contact' className={linkClass} onClick={toggleMobileMenu}>CONTACT US</NavLink>
-                                <NavLink to='/login' className={linkClass} onClick={() => { toggleMobileMenu(); handleLogout(); }}>LOG OUT</NavLink>
+                                <NavLink to='/' className={linkClass} onClick={toggleMobileMenu}> HOME </NavLink>
+                                <NavLink to='/products' className={linkClass} onClick={toggleMobileMenu}> PRODUCTS </NavLink>
+                                <NavLink to='/recipe' className={linkClass} onClick={toggleMobileMenu}> RECIPE </NavLink>
+                                <NavLink to='/' className={linkClass} onClick={toggleMobileMenu}> ABOUT </NavLink>
+                                <NavLink to='/contact' className={linkClass} onClick={toggleMobileMenu}> CONTACT </NavLink>
+                                <NavLink to='/login' className={linkClass} onClick={() => { toggleMobileMenu(); handleLogout(); }}> LOG OUT </NavLink>
                             </>
                         ) : (
                             <>
-                                <NavLink to='/' className={linkClass} onClick={toggleMobileMenu}>HOME</NavLink>
-                                <NavLink to='/sign-up' className={linkClass} onClick={toggleMobileMenu}>SIGN IN</NavLink>
+                                <NavLink to='/' className={linkClass} onClick={toggleMobileMenu}> HOME </NavLink>
+                                <NavLink to='/sign-up' className={linkClass} onClick={toggleMobileMenu}> SIGN IN </NavLink>
                             </>
                         )}
                     </div>
