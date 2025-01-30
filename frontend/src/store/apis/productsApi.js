@@ -6,7 +6,7 @@ export const productsApi = createApi({
     endpoints: (builder) => ({
         fetchProducts: builder.query({
             query: () => ({
-                url: '/users',
+                url: '/products',
                 method: 'GET',
             })
         })
