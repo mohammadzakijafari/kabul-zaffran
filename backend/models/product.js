@@ -31,7 +31,7 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: true,
         enum: ["featured", "best-seller", "first-quality", "second-quality"], // You can add more types
-      },
+    },
     images: {
       type: [String],
       validate: [

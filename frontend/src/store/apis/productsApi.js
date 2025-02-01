@@ -9,8 +9,14 @@ export const productsApi = createApi({
                 url: '/products',
                 method: 'GET',
             })
+        }),
+        fetchProduct: builder.query({
+            query: (productId) => ({
+                url: `/products/${productId}`,
+                method: 'GET',
+            })
         })
     })
 });
 
-export const { useFetchProductsQuery } = productsApi;
+export const { useFetchProductsQuery, useFetchProductQuery } = productsApi;
