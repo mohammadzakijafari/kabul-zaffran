@@ -20,13 +20,15 @@ const SingleProduct = () => {
     // initializing state variables that will be modified by users 
     const [image, setImage] = useState('');
     const [quantity, setQuantity] = useState(1);
-    const [productSize, setProductSize] = useState('one-gram');
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(data?.regularPrice);
 
     // handling quantity change while the users wanted to purchase more product
     const handleQuantity = (e) => {
         const value = Math.max(1, e.target.value);
         setQuantity(value);
+
+        // setting total price
+        setTotalPrice(data?.regularPrice * quantity);
     }
 
     // handling product size change while the users wanted to purchase different sizes
@@ -55,11 +57,11 @@ const SingleProduct = () => {
                 break;
         }
     }
-    
-    
+
     // when user wants to order, then we handle the order here
     const addNewOrder = async(e) => {
         e.preventDefault();
+
         // check whether the user is logged in or not
         if (!token) {
             toast.error("please login before placing order");
@@ -67,9 +69,8 @@ const SingleProduct = () => {
         // order data to be stored to database using axios
         const orderData = {
             productId: id,
-            quantity,
+            quantity, 
             totalPrice,
-            regularPrice,
         }
 
         //
