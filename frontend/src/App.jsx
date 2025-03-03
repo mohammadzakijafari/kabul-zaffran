@@ -10,13 +10,14 @@ import Login from "./components/Login";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import SignUp from "./components/SignUp";
 import SingleProduct from "./pages/SingleProduct";
+import Order from "./pages/Order";
 
 // here accessing Backend Url from env file and exporting to other files as required
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 
 function App() {
-
+  
   return (
     <div>
       <BrowserRouter>
@@ -38,6 +39,7 @@ function App() {
             <Route path="/recipe" element = { <Recipe /> } />
             <Route path="/about" element = { <About /> } />
             <Route path="/contact" element = { <Contact /> } />
+            <Route path="/order" element = { <Order /> } />
           </Route>
         </Routes>
       </BrowserRouter>

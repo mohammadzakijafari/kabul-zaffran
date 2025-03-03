@@ -40,6 +40,7 @@ const login = async (req, res) => {
             password 
         } = req.body;
 
+        console.log(email, password);
         // checks that all required fields are provided 
         if (!email && !password) {
             return res.send({msg: "Both email and password are required"});

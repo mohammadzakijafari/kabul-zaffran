@@ -1,31 +1,77 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { backendUrl } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRegisterMutation } from '../store/apis/usersApi';
 
 const SignUp = () => {
+    // initializing state variables for email and password
     let [user, setUser] = useState({ username: "", email: "", password: "" });
+    
     const navigate = useNavigate();
-    // handling user input change
+    const dispatch = useDispatch();
+
+    // accessing data from redux store
+    const [register, {isLoading, error}] = useRegisterMutation();
+
+    //checks whether user is authenticated or not
+    const { userInfo } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if(userInfo) {
+            navigate('/');
+        }
+    }, [navigate, userInfo]);
+
+    // getting user information from form
     const handleChange = (e) => {
         e.preventDefault();
+
         const value = e.target.value;
-        // Update the state with the added value by the user
         setUser({...user, [e.target.name]: value });
     }
-    // handling user click to register
-    function handleSignUp (e) {
+    
+    const handleSignUp = async (e) => {
         e.preventDefault();
-        axios.post(`${backendUrl}/users/register`, user)
-            .then((res) => {
-                alert("Sign Up Successful");
-                navigate("/login");
-            }
-        )
-        .catch((error) => {
-            alert("Could not Sign Up");
-        });
+
+        if (!username || !user.email || !user.password) {
+            console.error('Please provide username, email and password.');
+            return;
+        }
+
+        try {
+            const res = await register(user).unwrap();
+            dispatch(setCredentials({ ...res }));
+            navigate('/');
+            console.log(res.data.msg);
+        }catch (err) {
+            console.log(err?.data?.msg || err.error);
+        }
     }
+
+
+    // let [user, setUser] = useState({ username: "", email: "", password: "" });
+    // const navigate = useNavigate();
+    // handling user input change
+    // const handleChange = (e) => {
+    //     e.preventDefault();
+    //     const value = e.target.value;
+    //     // Update the state with the added value by the user
+    //     setUser({...user, [e.target.name]: value });
+    // }
+    // handling user click to register
+    // function handleSignUp (e) {
+    //     e.preventDefault();
+    //     axios.post(`${backendUrl}/users/register`, user)
+    //         .then((res) => {
+    //             alert("Sign Up Successful");
+    //             navigate("/login");
+    //         }
+    //     )
+    //     .catch((error) => {
+    //         alert("Could not Sign Up");
+    //     });
+    // }
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">

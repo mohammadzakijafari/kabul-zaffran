@@ -1,34 +1,96 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { backendUrl } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../store/apis/usersApi';
+import { setCredentials } from '../store/apis/authApi';
 
 const Login = () => {
+
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
+
     let [user, setUser] = useState({ email: "", password: "" });
+
     const navigate = useNavigate();
-    // handling email and password change
+    const dispatch = useDispatch();
+
+    const [login, {isLoading, error}] = useLoginMutation();
+
+    const { userInfo } = useSelector((state) => state.auth);
+
+    console.log(`userInfo -------- ${userInfo}`);
+
+    useEffect(() => { 
+        if(userInfo) {
+            navigate('/');
+        }
+    }, [navigate, userInfo]);
+
     const handleChange = (e) => {
         e.preventDefault();
 
         const value = e.target.value;
         setUser({...user, [e.target.name]: value });
     }
-    // handling login 
-    function handleLogin (e) {
+    
+    const handleLogin = async (e) => {
         e.preventDefault();
 
-        axios.post(`${backendUrl}/users/login`, user)
-            .then((res) => {
-                alert("Login Successful, Welcome");
-                console.log(res.data);
-                localStorage.setItem("token", res.data.token);
-                navigate("/");
-            }
-        )
-        .catch((error) => {
-            alert("Could not Login");
-        })
+        if (!user.email || !user.password) {
+            console.error('Please provide both email and password.');
+            return;
+        }
+
+        
+        try {
+            const res = await login(user);
+            
+            // const res = await login(user).unwrap();
+            let data = JSON.stringify(res);
+            // console.log(`Data after stringify -------------- ${data}`);
+
+            console.log(` ------------------ ${userInfo}`);
+            dispatch(setCredentials(data));
+
+            
+            
+            // console.log(`Response from backend ------- ${JSON.stringify(res)}`);
+        }catch (err) {
+            console.log(err?.data?.msg || err.error);
+            console.log(err);
+        }
     }
+    // -----------------------------------------------------
+
+    // let [user, setUser] = useState({ email: "", password: "" });
+    // const navigate = useNavigate();
+    // handling email and password change
+
+    // const handleChange = (e) => {
+    //     e.preventDefault();
+
+    //     const value = e.target.value;
+    //     setUser({...user, [e.target.name]: value });
+    // }
+
+    // handling login 
+    // function handleLogin (e) {
+    //     e.preventDefault();
+
+    //     axios.post(`${backendUrl}/users/login`, user)
+    //         .then((res) => {
+    //             alert("Login Successful, Welcome");
+    //             console.log(res.data);
+    //             localStorage.setItem("token", res.data.token);
+    //             navigate("/");
+    //         }
+    //     )
+    //     .catch((error) => {
+    //         alert("Could not Login");
+    //     })
+    // }
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
