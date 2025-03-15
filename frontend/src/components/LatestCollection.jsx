@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFetchProductsQuery } from '../store';
+import { useFetchProductsQuery } from '../store/apis/productsApi';
 import ProductListItem from './ProductListItem';
 
 const LatestCollection = () => {
@@ -26,4 +26,4 @@ const LatestCollection = () => {
   )
 }
 
-export default LatestCollection
+export default LatestCollection;

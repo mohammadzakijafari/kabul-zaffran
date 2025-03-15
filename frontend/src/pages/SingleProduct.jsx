@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useFetchProductQuery, useFetchProductsQuery } from '../store';
-import axios from 'axios';
+import { useFetchProductQuery } from '../store/apis/productsApi';
+import { useCreateOrderMutation } from '../store/apis/ordersApi';
 import { FaStar } from "react-icons/fa";
 import { FaStarHalfAlt } from "react-icons/fa";
 import { toast } from 'react-toastify';
-import { backendUrl } from '../App';
+import { useSelector } from 'react-redux';
 
 const SingleProduct = () => {
-    // getting the product id using params
+
+    // ------------------------ here we are using redux toolkit to fetchProducts and make authentication and create orders if the user is authenticated
     const { id } = useParams();
+    const { data, error, isFetching } = useFetchProductQuery(id);
+    const [createOrder, { isLoading }] = useCreateOrderMutation();
+    const { userInfo } = useSelector((state) => state.auth);
 
-    // getting token from local storage for the purpose of authentication
-    const token = localStorage.getItem('token');
-
-    //accessing single product details using redux toolkit query from store
-    const {data, error, isFetching} = useFetchProductQuery(id);
-
-    // initializing state variables that will be modified by users 
     const [image, setImage] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [totalPrice, setTotalPrice] = useState(data?.regularPrice);
 
-    // handling quantity change while the users wanted to purchase more product
+    // Handle loading and error states
+    if (isFetching) return <div>Loading product...</div>;
+    if (error) return <div>Error loading product!</div>;
+    if (!data) return <div>Product not found</div>;
+
     const handleQuantity = (e) => {
         const value = Math.max(1, e.target.value);
         setQuantity(value);
+        setTotalPrice(data?.regularPrice * value);
+    };
 
-        // setting total price
-        setTotalPrice(data?.regularPrice * quantity);
-    }
-
-    // handling product size change while the users wanted to purchase different sizes
     const handleProductSizeChange = (e) => {
         const value = e.target.value;
         switch(value) {
@@ -56,34 +54,106 @@ const SingleProduct = () => {
             default:
                 break;
         }
-    }
+    };
 
-    // when user wants to order, then we handle the order here
-    const addNewOrder = async(e) => {
+    const addNewOrder = async (e) => {
         e.preventDefault();
 
-        // check whether the user is logged in or not
-        if (!token) {
-            toast.error("please login before placing order");
-        }
-        // order data to be stored to database using axios
-        const orderData = {
-            productId: id,
-            quantity, 
-            totalPrice,
+        if (!userInfo) {
+            toast.error('Please login to place an order');
+            return;
         }
 
-        //
         try {
-            const res = await axios.post(`${backendUrl}/orders/create`, orderData, {headers: {Authorization: `Bearer ${token}`}});
-            toast.success(res.data.msg);
-        } catch(error) {
-            console.error(error);
-            toast.error("Failed to place the order");
-        } finally {
-
+            const orderData = {
+                productId: id,
+                quantity,
+                totalPrice,
+            };
+            const res = await createOrder(orderData).unwrap();
+            toast.success(res.msg);
+        } catch (err) {
+            toast.error(err.data?.msg || 'Failed to place order');
         }
-    }
+    };
+
+    
+    // getting the product id using params
+    // const { id } = useParams();
+
+    // // getting token from local storage for the purpose of authentication
+    // const token = localStorage.getItem('token');
+
+    // //accessing single product details using redux toolkit query from store
+    // const {data, error, isFetching} = useFetchProductQuery(id);
+
+    // // initializing state variables that will be modified by users 
+    // const [image, setImage] = useState('');
+    // const [quantity, setQuantity] = useState(1);
+    // const [totalPrice, setTotalPrice] = useState(data?.regularPrice);
+
+    // // handling quantity change while the users wanted to purchase more product
+    // const handleQuantity = (e) => {
+    //     const value = Math.max(1, e.target.value);
+    //     setQuantity(value);
+
+    //     // setting total price
+    //     setTotalPrice(data?.regularPrice * quantity);
+    // }
+
+    // // handling product size change while the users wanted to purchase different sizes
+    // const handleProductSizeChange = (e) => {
+    //     const value = e.target.value;
+    //     switch(value) {
+    //         case 'one-gram':
+    //             setTotalPrice(data?.regularPrice * quantity);
+    //             break;
+    //         case 'one-half-gram':
+    //             setTotalPrice(data?.regularPrice * 1.5 * quantity);
+    //             break;
+    //         case 'three-gram':
+    //             setTotalPrice(data?.regularPrice * 3 * quantity);
+    //             break;
+    //         case 'ten-gram':
+    //             setTotalPrice(data?.regularPrice * 10 * quantity);
+    //             break;
+    //         case 'fifteen-gram':
+    //             setTotalPrice(data?.regularPrice * 15 * quantity);
+    //             break;
+    //         case 'twenty-gram':
+    //             setTotalPrice(data?.regularPrice * 20 * quantity);
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
+
+    // // when user wants to order, then we handle the order here
+    // const addNewOrder = async(e) => {
+    //     e.preventDefault();
+
+    //     // check whether the user is logged in or not
+    //     if (!token) {
+    //         toast.error("please login before placing order");
+    //     }
+    //     // order data to be stored to database using axios
+    //     const orderData = {
+    //         productId: id,
+    //         quantity, 
+    //         totalPrice,
+    //     }
+
+    //     //
+    //     try {
+    //         const res = await axios.post(`${backendUrl}/orders/create`, orderData, {headers: {Authorization: `Bearer ${token}`}});
+    //         toast.success(res.data.msg);
+    //     } catch(error) {
+    //         console.error(error);
+    //         toast.error("Failed to place the order");
+    //     } finally {
+
+    //     }
+    // }
   return (
     <div className="p-4 mt-20">
         <div className="flex flex-col sm:flex-row gap-16 mx-20">
@@ -91,7 +161,7 @@ const SingleProduct = () => {
             <div className="flex-1">
                 <div className="flex gap-2 mb-4">
                     <div className="flex flex-col gap-2">
-                    {data?.images.map((img, index) => (
+                    {data?.images?.map((img, index) => (
                         <img
                         key={index}
                         src={img}
@@ -103,7 +173,7 @@ const SingleProduct = () => {
                     </div>
                     <div className="flex-1">
                     <img
-                        src={image || data?.images[0]}
+                        src={image || data?.images[0] || ''}
                         alt="Main product"
                         className="w-full h-[70vh] object-cover rounded-md"
                     />
@@ -121,7 +191,8 @@ const SingleProduct = () => {
                     <span className="text-gray-600 pl-2">(150 reviews)</span>
                 </div>
 
-                <p className="text-4xl font-semibold mt-4">${data?.regularPrice ? (data.regularPrice * quantity).toFixed(2) : "Loading..."}</p>
+                {/* <p className="text-4xl font-semibold mt-4">${data?.regularPrice ? (data.regularPrice * quantity).toFixed(2) : "Loading..."}</p> */}
+                <p className="text-4xl font-semibold mt-4"> { totalPrice } </p>
 
                 <p className="mt-4 text-gray-700">{data?.description}</p>
 
