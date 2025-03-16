@@ -20,7 +20,7 @@ const Login = () => {
 
     const { userInfo } = useSelector((state) => state.auth);
 
-    console.log(`userInfo -------- ${userInfo}`);
+    // console.log(`userInfo -------- ${userInfo}`);
 
     useEffect(() => { 
         if(userInfo) {

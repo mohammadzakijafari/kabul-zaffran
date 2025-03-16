@@ -15,6 +15,7 @@ const SingleProduct = () => {
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const { userInfo } = useSelector((state) => state.auth);
 
+    // console.log(`User Into Single Page ----- ${userInfo}`);
     const [image, setImage] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [totalPrice, setTotalPrice] = useState(data?.regularPrice);
