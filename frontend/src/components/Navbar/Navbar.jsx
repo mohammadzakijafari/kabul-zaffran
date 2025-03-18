@@ -56,7 +56,7 @@ const Navbar = () => {
                             <NavLink to='/recipe' className={linkClass}>RECIPE</NavLink>
                             <NavLink to='/about' className={linkClass}>ABOUT</NavLink>
                             <NavLink to='/contact' className={linkClass}>CONTACT </NavLink>
-                            <NavLink to='/check-order' className={linkClass}> Orders </NavLink>
+                            <NavLink to='/orders' className={linkClass}> Orders </NavLink>
                             <NavLink to='/login' className={linkClass} onClick={handleLogout}>LOG OUT</NavLink>
                         </>
                     ) : (

@@ -58,7 +58,7 @@ const createOrder = async (req, res) => {
 const getUserOrder = async (req, res) => {
     try {
         let user = req.user.id;
-        console.log(user);
+        // console.log(user);
        
         const userOrder = await User.findById(user).populate({path: "orders", populate: {path: "products.productId", model: "Product"}});
         if (!userOrder) {
